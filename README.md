@@ -1,1 +1,1 @@
-# Lab1-Sistope
+#Laboratorio 1 - Sistemas Operativos
