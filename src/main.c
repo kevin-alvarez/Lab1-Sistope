@@ -59,7 +59,7 @@ int main(int argc, char** argv){
   }
   hijos = atoi(hvalue);
 
-  //Procedimientos
+  crear_hijos(hijos, mflag);
 
   return 0;
 }

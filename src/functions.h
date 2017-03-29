@@ -51,5 +51,10 @@ lista *crear_lista(int pid, int hijo);
 */
 void lista_add(lista *L, int hijo, int pid);
 
+/*
+	Explicar....
+*/
+void crear_hijos(int cantidad, int flag);
+
 
 #endif

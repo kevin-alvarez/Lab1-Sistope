@@ -1,7 +1,3 @@
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #include "functions.h"
 
@@ -21,7 +17,7 @@ void nuevoSigint(int num_senal)
 {
 
 	//Obtengo el pid del proceso actual y hago el print del mensaje
-   	int pid_actual = (int)getpid(2);
+   	int pid_actual = (int)getpid();
    	printf("Soy el hijo con pid: %i, y estoy vivo aun", pid_actual);
 
    	//Ahora tengo que cambiar el Sigint por el default
@@ -32,7 +28,7 @@ void nuevoSigint(int num_senal)
 void defaultSigint(int num_senal)
 {
 	//aqui va el default
-	kill(getpid(), sig);
+	kill(getpid(), SIGTERM);
 }
 
 lista *crear_lista(int pid, int hijo) {
@@ -53,4 +49,43 @@ void lista_add(lista *L, int hijo, int pid) {
 	aux->sgte->pid = pid;
 	aux->sgte->hijo = hijo;
 	aux->sgte->sgte = NULL;
+}
+
+void crear_hijos(int cantidad, int flag)
+{
+	int i;
+	int pid_actual = 2; //Valor cualquiera solo para entrar al if
+	int pid_flag = 0; //Valor para indicar que un pid ya se mostro y que no se repita su mensaje
+
+	//creo la cabecera de la lista
+	lista *L = crear_lista(-1,-1);
+
+	//Mensaje en caso de que el usuario haya pedido esta informacion
+	if(flag == 1)
+	{
+		printf("Mostrando la informacion por pantala:\n");
+	}
+
+	//ciclo for para crear los hijos
+	for(i=0; i < cantidad; i++)
+	{
+		if(pid_actual != 0)
+		{
+			pid_actual = fork();
+			lista_add(L,(i+1),pid_actual);
+		}
+		if( (flag == 1)&&(pid_actual == 0)&&(pid_flag == 0) )
+		{
+			printf("Numero: %i, pid:%i \n", (i+1), getpid());
+			pid_flag = 1; //se cambia el flag para que no se muestre el mensaje de este hijo de nuevo en otra iteracion
+		}
+	}
+
+	
+	/*Estaba probando si agregaba.
+
+	if(pid_actual != 0)
+	{
+		printf("pid3: %i", L->sgte->sgte->sgte->pid);
+	}*/
 }
