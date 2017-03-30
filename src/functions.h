@@ -7,17 +7,18 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <string.h>
-#include <wait.h>
 
 //////// --ESTRUCTURAS-- ///////
 
-struct proc {
+/*struct proc {
 	pid_t pid; //guarda el pid de ese hijo
 	int index; //numero de hijo
 	int contador; //guarda el contador de cuantas veces ha sido llamado
 };
-typedef struct proc proc;
+typedef struct proc proc;*/
 
+//////// --VARIABLES GLOBALES-- ///////
+int contador;
 
 //////// --FUNCIONES-- ////////
 
@@ -42,19 +43,22 @@ int isInt(char *number);
 /*
 	Explicar....
 */
-proc *crear_hijos(int cantidad, int mflag);
+pid_t *crear_hijos(int cantidad, int mflag);
 
 /*
 	Funcion a reemplazar el SIGINT y envia el
 	mensaje pedido por el enunciado.
 */
-void nuevoSigint(int);
+void SigInt_new(int num_senal);
 
 /*
 	Funcion default del SIGINT, que vuelve una vez
 	ejecutado el SIGINT modificado.
 */
-void defaultSigint(int);
+void SigInt_default(int num_senal);
 
+void SigUsr1_new(int num_senal);
+
+void SigUsr2_new(int num_senal);
 
 #endif

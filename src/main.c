@@ -15,13 +15,19 @@
 */
 
 int main(int argc, char** argv){
-  int cantHijos, mflag, flag_padre;
-  proc *hijos;
+  int cantHijos, mflag, numHijo, numSenal;
+  pid_t *hijos;
+  contador = 0;
 
   call_getopt(argc, argv, &cantHijos, &mflag);
   printf("%i - %i\n", cantHijos, mflag);
   hijos = crear_hijos(cantHijos, mflag);
-  printf("padre...\n");
-  getc(stdin);
+
+  while(1){
+    printf("Ingresar numero de hijo y senal a enviar (X - Y): \n");
+    scanf("%i - %i", &numHijo, &numSenal);
+    printf("La senal %i sera enviada al hijo %i\n", numSenal, numHijo);
+    kill(hijos[numHijo-1], numSenal);
+  }
   return 0;
 }

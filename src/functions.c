@@ -31,7 +31,7 @@ void call_getopt(int argc, char** argv, int *h, int *m){
         else{
           fprintf(stderr, "Opcion desconocida '\\x%x'.\n", optopt);
         }
-        return;
+        exit(1);
       default:
         abort();
     }
@@ -57,77 +57,58 @@ int isInt(char *number){
   return 0;
 }
 
-void nuevoSigint(int num_senal){
-
-	//Obtengo el pid del proceso actual y hago el print del mensaje
-   	int pid_actual = (int)getpid();
-   	printf("Soy el hijo con pid: %i, y estoy vivo aun", pid_actual);
-
-   	//Ahora tengo que cambiar el Sigint por el default
-   	signal(SIGINT, defaultSigint);
-
-}
-
-void defaultSigint(int num_senal)
-{
-	//aqui va el default
-	kill(getpid(), SIGTERM);
-}
-
-proc *crear_hijos(int cantidad, int mflag){
+pid_t *crear_hijos(int cantidad, int mflag){
 	int i, j;
-  proc *hijos, hijo_actual;
+  pid_t *hijos, hijo_actual;
 
-  hijos = (proc*)malloc(cantidad*sizeof(proc));
+  hijos = (pid_t*)malloc(cantidad*sizeof(pid_t));
 
   for(i=0;i < cantidad;i++){
-    hijo_actual.pid = fork();
-    hijo_actual.index = i+1;
-    if (hijo_actual.pid == 0){
-      //printf("soy el hijo %i\n", i);
+    hijo_actual = fork();
+    if (hijo_actual== 0){
+
+      signal(SIGINT, SigInt_new);
+      signal(SIGUSR1, SigUsr1_new);
+      signal(SIGUSR2, SigUsr2_new);
+
+      //printf("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
+
       while(1); //el hijo queda en espera
       break;
     }else{
       hijos[i] = hijo_actual;
       if(mflag == 1){
-        printf("Numero: %i , pid:%i\n", hijos[i].index, hijos[i].pid);
+        printf("Numero: %i , pid:%i\n", i+1, hijos[i]);
       }
     }
   }
 
   return hijos;
+}
 
+void SigInt_new(int num_senal){
 
-/*
-	//creo la cabecera de la lista
-	lista *L = crear_lista(-1,-1);
+	//Obtengo el pid del proceso actual y hago el print del mensaje
+   	int pid_actual = (int)getpid();
+   	printf("Soy el hijo con pid: %i, y estoy vivo aun\n", pid_actual);
+    //printf("Hijo...\n");
 
-	//Mensaje en caso de que el usuario haya pedido esta informacion
-	if(flag == 1)
-	{
-		printf("Mostrando la informacion por pantala:\n");
-	}
+   	//Ahora tengo que cambiar el Sigint por el default
+   	signal(SIGINT, SigInt_default);
 
-	//ciclo for para crear los hijos
-	for(i=0; i < cantidad; i++)
-	{
-		if(pid_actual != 0)
-		{
-			pid_actual = fork();
-			lista_add(L,(i+1),pid_actual);
-		}
-		if( (flag == 1)&&(pid_actual == 0)&&(pid_flag == 0) )
-		{
-			printf("Numero: %i, pid:%i \n", (i+1), getpid());
-			pid_flag = 1; //se cambia el flag para que no se muestre el mensaje de este hijo de nuevo en otra iteracion
-		}
-	}
+}
 
+void SigInt_default(int num_senal)
+{
+	//aqui va el default
+	kill(getpid(), SIGTERM);
+}
 
-	/*Estaba probando si agregaba.
+void SigUsr1_new(int num_senal){
+  contador += 1;
+  printf("pid: %i, y he recibido esta llamada %i veces", getpid(), contador);
+}
 
-	if(pid_actual != 0)
-	{
-		printf("pid3: %i", L->sgte->sgte->sgte->pid);
-	}*/
+void SigUsr2_new(int num_senal){
+  fork();
 }
