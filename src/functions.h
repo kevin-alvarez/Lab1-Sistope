@@ -7,16 +7,16 @@
 #include <sys/types.h>
 #include <signal.h>
 #include <string.h>
+#include <wait.h>
 
 //////// --ESTRUCTURAS-- ///////
 
-struct list {
-	int hijo; //guarda el número de hijo
-	int pid; //guarda el pid de ese hijo
+struct proc {
+	pid_t pid; //guarda el pid de ese hijo
+	int index; //numero de hijo
 	int contador; //guarda el contador de cuantas veces ha sido llamado
-	struct list *sgte;
 };
-typedef struct list lista;
+typedef struct proc proc;
 
 
 //////// --FUNCIONES-- ////////
@@ -40,6 +40,11 @@ void call_getopt(int argc, char** argv, int *h, int *m);
 int isInt(char *number);
 
 /*
+	Explicar....
+*/
+proc *crear_hijos(int cantidad, int mflag);
+
+/*
 	Funcion a reemplazar el SIGINT y envia el
 	mensaje pedido por el enunciado.
 */
@@ -50,22 +55,6 @@ void nuevoSigint(int);
 	ejecutado el SIGINT modificado.
 */
 void defaultSigint(int);
-
-/*
-	Crea una lista con un valor inicial.
-*/
-lista *crear_lista(int pid, int hijo);
-
-/*
-	Agrega un nodo al final de la lista
-	con ciertos valores.
-*/
-void lista_add(lista *L, int hijo, int pid);
-
-/*
-	Explicar....
-*/
-void crear_hijos(int cantidad, int flag);
 
 
 #endif

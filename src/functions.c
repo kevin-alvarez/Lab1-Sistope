@@ -48,7 +48,7 @@ void call_getopt(int argc, char** argv, int *h, int *m){
 int isInt(char *number){
   int i, c;
 
-  for(i=0; i<strlen(number); i++){
+  for(i=0;i<strlen(number); i++){
     c = number[i];
     if(c < 48 || c > 57 || c == 0){
       return 1;
@@ -57,8 +57,7 @@ int isInt(char *number){
   return 0;
 }
 
-void nuevoSigint(int num_senal)
-{
+void nuevoSigint(int num_senal){
 
 	//Obtengo el pid del proceso actual y hago el print del mensaje
    	int pid_actual = (int)getpid();
@@ -75,32 +74,31 @@ void defaultSigint(int num_senal)
 	kill(getpid(), SIGTERM);
 }
 
-lista *crear_lista(int pid, int hijo) {
-	lista *L = (lista*)malloc(sizeof(lista));
-	L->sgte = NULL;
-	L->pid = pid;
-	L->hijo = hijo;
-	L->contador = 0;
-	return L;
-}
+proc *crear_hijos(int cantidad, int mflag){
+	int i, j;
+  proc *hijos, hijo_actual;
 
-void lista_add(lista *L, int hijo, int pid) {
-	lista *aux = L;
-	while (aux->sgte != NULL) {
-		aux = aux->sgte;
-	}
-	aux->sgte = (lista*)malloc(sizeof(lista));
-	aux->sgte->pid = pid;
-	aux->sgte->hijo = hijo;
-	aux->sgte->sgte = NULL;
-}
+  hijos = (proc*)malloc(cantidad*sizeof(proc));
 
-void crear_hijos(int cantidad, int flag)
-{
-	int i;
-	int pid_actual = 2; //Valor cualquiera solo para entrar al if
-	int pid_flag = 0; //Valor para indicar que un pid ya se mostro y que no se repita su mensaje
+  for(i=0;i < cantidad;i++){
+    hijo_actual.pid = fork();
+    hijo_actual.index = i+1;
+    if (hijo_actual.pid == 0){
+      //printf("soy el hijo %i\n", i);
+      while(1); //el hijo queda en espera
+      break;
+    }else{
+      hijos[i] = hijo_actual;
+      if(mflag == 1){
+        printf("Numero: %i , pid:%i\n", hijos[i].index, hijos[i].pid);
+      }
+    }
+  }
 
+  return hijos;
+
+
+/*
 	//creo la cabecera de la lista
 	lista *L = crear_lista(-1,-1);
 

@@ -15,10 +15,13 @@
 */
 
 int main(int argc, char** argv){
-  int hijos, mflag;
-  call_getopt(argc, argv, &hijos, &mflag);
-  printf("%i - %i\n", hijos, mflag);
-  crear_hijos(hijos, mflag);
+  int cantHijos, mflag, flag_padre;
+  proc *hijos;
 
+  call_getopt(argc, argv, &cantHijos, &mflag);
+  printf("%i - %i\n", cantHijos, mflag);
+  hijos = crear_hijos(cantHijos, mflag);
+  printf("padre...\n");
+  getc(stdin);
   return 0;
 }
