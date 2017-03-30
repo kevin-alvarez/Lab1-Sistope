@@ -1,5 +1,49 @@
-
 #include "functions.h"
+
+void call_getopt(int argc, char** argv, int *h, int *m){
+  int c, hijos, mflag;
+  char *hvalue;
+
+  //Obtener parametros
+  mflag = 0;
+  opterr = 0;
+
+  if(argc <= 1){
+    printf("Se deben ingresar opciones (uso: -h <numero de hijos> -m)\n");
+    exit(1) ;
+  }
+
+  while((c = getopt(argc, argv, "h:m")) != -1){
+    switch (c) {
+      case 'h':
+        hvalue = optarg;
+        break;
+      case 'm':
+        mflag = 1;
+        break;
+      case '?':
+        if(optopt == 'h'){
+          fprintf(stderr, "Opcion -h requiere un argumento.\n");
+        }
+        else if (isprint(optopt)) {
+          fprintf(stderr, "Opcion -%c desconocida.\n", optopt);
+        }
+        else{
+          fprintf(stderr, "Opcion desconocida '\\x%x'.\n", optopt);
+        }
+        return;
+      default:
+        abort();
+    }
+  }
+
+  if(isInt(hvalue)){
+    printf("El parametro ingresado para los hijos no es valido\n");
+    exit(1);
+  }
+  *h = atoi(hvalue);
+  *m = mflag;
+}
 
 int isInt(char *number){
   int i, c;
@@ -81,7 +125,7 @@ void crear_hijos(int cantidad, int flag)
 		}
 	}
 
-	
+
 	/*Estaba probando si agregaba.
 
 	if(pid_actual != 0)
