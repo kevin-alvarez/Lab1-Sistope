@@ -63,6 +63,11 @@ pid_t *crear_hijos(int cantidad, int mflag){
 
   hijos = (pid_t*)malloc(cantidad*sizeof(pid_t));
 
+  if(mflag==1)
+  {
+    printf("Mostrando la información por pantalla: \n");
+  }
+
   for(i=0;i < cantidad;i++){
     hijo_actual = fork();
     if (hijo_actual== 0){
@@ -88,10 +93,11 @@ pid_t *crear_hijos(int cantidad, int mflag){
 
 void SigInt_new(int num_senal){
 
-	//Obtengo el pid del proceso actual y hago el print del mensaje
+	 //Obtengo el pid del proceso actual y hago el print del mensaje
    	int pid_actual = (int)getpid();
-   	printf("Soy el hijo con pid: %i, y estoy vivo aun\n", pid_actual);
-	//printf("Hijo...\n");
+    sleep(1); //Le puse un sleep para probar el orden
+   	printf("Soy el hijo con pid: %i, y estoy vivo aun\n\n", pid_actual);
+	 //printf("Hijo...\n");
 
    	//Ahora tengo que cambiar el Sigint por el default
    	signal(SIGINT, SigInt_default);
@@ -106,9 +112,17 @@ void SigInt_default(int num_senal)
 
 void SigUsr1_new(int num_senal){
   contador += 1;
-  printf("pid: %i, y he recibido esta llamada %i veces", getpid(), contador);
+  //printf("Hola, pasaste por la SIGUSR1 nueva creada por si acaso\n");
+  printf("pid: %i, y he recibido esta llamada %i veces\n\n", getpid(), contador);
 }
 
 void SigUsr2_new(int num_senal){
+  //printf("Hola, pasaste por la SIGUSR2 nueva creada por si acaso\n");
   fork();
+}
+
+void SigInt_padre(int num_senal)
+{
+  printf("Hola, soy el papa y tambien estoy vivo \n\n");
+  signal(SIGINT, SigInt_default);
 }

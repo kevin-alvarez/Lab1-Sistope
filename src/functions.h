@@ -61,4 +61,10 @@ void SigUsr1_new(int num_senal);
 
 void SigUsr2_new(int num_senal);
 
+/*
+	Sigint para que el padre no muera
+	cuando se presiones ctrl+c
+*/
+void SigInt_padre(int num_senal);
+
 #endif
