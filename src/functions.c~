@@ -91,7 +91,7 @@ void SigInt_new(int num_senal){
 	//Obtengo el pid del proceso actual y hago el print del mensaje
    	int pid_actual = (int)getpid();
    	printf("Soy el hijo con pid: %i, y estoy vivo aun\n", pid_actual);
-	//printf("Hijo...\n");
+    //printf("Hijo...\n");
 
    	//Ahora tengo que cambiar el Sigint por el default
    	signal(SIGINT, SigInt_default);
