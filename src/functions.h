@@ -8,20 +8,10 @@
 #include <signal.h>
 #include <string.h>
 
-//////// --ESTRUCTURAS-- ///////
-
-/*struct proc {
-	pid_t pid; //guarda el pid de ese hijo
-	int index; //numero de hijo
-	int contador; //guarda el contador de cuantas veces ha sido llamado
-};
-typedef struct proc proc;*/
-
 //////// --VARIABLES GLOBALES-- ///////
 int contador;
 
 //////// --FUNCIONES-- ////////
-
 /*
 	Funcion que hace la llamada a getopt para obtener las opciones y parametros
 	ingresados por la terminal.
@@ -66,5 +56,7 @@ void SigUsr2_new(int num_senal);
 	cuando se presiones ctrl+c
 */
 void SigInt_padre(int num_senal);
+
+void Sig_doNothing(int num_senal);
 
 #endif

@@ -4,7 +4,7 @@ void call_getopt(int argc, char** argv, int *h, int *m){
   int c, hijos, mflag;
   char *hvalue;
 
-  //Obtener parametros
+  //Obtener parametros.
   mflag = 0;
   opterr = 0;
 
@@ -37,10 +37,12 @@ void call_getopt(int argc, char** argv, int *h, int *m){
     }
   }
 
+  //Procesar parametros.
   if(isInt(hvalue)){
     printf("El parametro ingresado para los hijos no es valido\n");
     exit(1);
   }
+  //retorno de parametros por referencia.
   *h = atoi(hvalue);
   *m = mflag;
 }
@@ -71,13 +73,9 @@ pid_t *crear_hijos(int cantidad, int mflag){
   for(i=0;i < cantidad;i++){
     hijo_actual = fork();
     if (hijo_actual== 0){
-
       signal(SIGINT, SigInt_new);
       signal(SIGUSR1, SigUsr1_new);
       signal(SIGUSR2, SigUsr2_new);
-
-      //printf("HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n");
-
       while(1); //el hijo queda en espera
       break;
     }else{
@@ -92,12 +90,9 @@ pid_t *crear_hijos(int cantidad, int mflag){
 }
 
 void SigInt_new(int num_senal){
-
-	 //Obtengo el pid del proceso actual y hago el print del mensaje
-   	int pid_actual = (int)getpid();
+   	pid_t pid_actual = getpid();
     sleep(1); //Le puse un sleep para probar el orden
    	printf("Soy el hijo con pid: %i, y estoy vivo aun\n\n", pid_actual);
-	 //printf("Hijo...\n");
 
    	//Ahora tengo que cambiar el Sigint por el default
    	signal(SIGINT, SigInt_default);
@@ -106,23 +101,30 @@ void SigInt_new(int num_senal){
 
 void SigInt_default(int num_senal)
 {
-	//aqui va el default
-	kill(getpid(), SIGTERM);
+	kill(getpid(), SIGTERM);//default signal para SIGINT
 }
 
 void SigUsr1_new(int num_senal){
   contador += 1;
-  //printf("Hola, pasaste por la SIGUSR1 nueva creada por si acaso\n");
   printf("pid: %i, y he recibido esta llamada %i veces\n\n", getpid(), contador);
 }
 
 void SigUsr2_new(int num_senal){
-  //printf("Hola, pasaste por la SIGUSR2 nueva creada por si acaso\n");
-  fork();
+  pid_t pid_hijo;
+  pid_hijo = fork();
+  if(pid_hijo == 0){//Si es el hijo recien creado
+    signal(SIGINT, SigInt_default);
+    signal(SIGUSR1, Sig_doNothing);
+    signal(SIGUSR2, Sig_doNothing);
+  }
 }
 
 void SigInt_padre(int num_senal)
 {
   printf("Hola, soy el papa y tambien estoy vivo \n\n");
   signal(SIGINT, SigInt_default);
+}
+
+void Sig_doNothing(int num_senal){
+  //Para que una señal no procese ninguna instruccion.
 }

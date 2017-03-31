@@ -20,35 +20,36 @@ int main(int argc, char** argv){
   contador = 0;
 
   call_getopt(argc, argv, &cantHijos, &mflag);
-  //printf("%i - %i\n", cantHijos, mflag);
   hijos = crear_hijos(cantHijos, mflag);
 
-  signal(SIGINT,SigInt_padre);
+  signal(SIGINT,SigInt_padre);//para evitar que el padre muera al hacer la señal SIGINT.
 
   while(1){
     sleep(1);
     printf("Ingresar numero de hijo y senal a enviar (X - Y): \n");
     scanf("%i - %i", &numHijo, &numSenal);
 
-    //printf("PID: %i", hijos[numHijo-1]);
-    
-    printf("La senal %i sera enviada al hijo %i\n\n", numSenal, numHijo);
-    switch(numSenal)
-    {
-      case 15:
-        kill(hijos[numHijo-1], SIGTERM);
-        break;
-      case 16:
-        kill(hijos[numHijo-1], SIGUSR1);
-        break;
-      case 17:
-        kill(hijos[numHijo-1], SIGUSR2);
-        break;
-      default:
-        printf("NO ESTA ESPECIFICADA ESA SENAL\n\n");
-        break;
+    if(numHijo > 0 && numHijo < cantHijos && hijos[numHijo-1] != -1){
+      printf("La senal %i sera enviada al hijo %i con pid: %i\n\n", numSenal, numHijo, hijos[numHijo-1]);
+      switch(numSenal)
+      {
+        case 15:
+          kill(hijos[numHijo-1], SIGTERM);
+          hijos[numHijo-1] = -1;//el hijo fue eliminado.
+          break;
+        case 16:
+          kill(hijos[numHijo-1], SIGUSR1);
+          break;
+        case 17:
+          kill(hijos[numHijo-1], SIGUSR2);
+          break;
+        default:
+          printf("NO ESTA ESPECIFICADA ESA SENAL.\n\n");
+          break;
+      }
+    }else{
+      printf("Hijo inexistente, el hijo ya fue eliminado o nunca fue creado, ingrese el numero de un hijo que exista.\n");
     }
-    //kill(hijos[numHijo-1], numSenal);
   }
   return 0;
 }
