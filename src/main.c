@@ -35,6 +35,7 @@ int main(int argc, char** argv){
       {
         case 15:
           kill(hijos[numHijo-1], SIGTERM);
+          wait(2);//padre espera a hijo (Usado para evitar procesos zombies)
           hijos[numHijo-1] = -1;//el hijo fue eliminado.
           break;
         case 16:

@@ -121,7 +121,7 @@ void SigUsr2_new(int num_senal){
 
 void SigInt_padre(int num_senal)
 {
-  printf("Hola, soy el papa y tambien estoy vivo \n\n");
+  printf("Hola, soy el Padre y estoy vivo \n\n");
   signal(SIGINT, SigInt_default);
 }
 
